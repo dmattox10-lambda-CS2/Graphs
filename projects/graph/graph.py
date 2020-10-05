@@ -157,7 +157,6 @@ class Graph:
         while s.size() > 0:
             path = s.pop()
             v = path[-1]
-            print(path)
             if v not in visited:
                 if v == destination_vertex:
                     return path
@@ -167,7 +166,10 @@ class Graph:
                     new_path = list(path)
                     new_path.append(neighbor)
                     s.push(new_path)
-                    return self.dfs_recursive(v, destination_vertex, s, visited)
+                    result = self.dfs_recursive(
+                        v, destination_vertex, s, visited)
+                    if result is not None:
+                        return result
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -241,4 +243,3 @@ if __name__ == '__main__':
     print(graph.dfs(1, 6))
     print("\n")
     print(graph.dfs_recursive(1, 6))
-    print("\n")
