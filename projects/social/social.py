@@ -1,6 +1,6 @@
 import random
 import math
-from util import Stack, Queue
+from util import Queue
 
 
 class User:
@@ -103,15 +103,50 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        for friendship in self.friendships[user_id]:
+            q = Queue()
+            members = set()
+            q.enqueue(friendship)
+            #print(f'friendship: {friendship}')
+            while q.size() > 0:
+                member = q.dequeue()
+                #print(f'member: {member}')
+                if member not in members:
+                    members.add(member)
+                    for friend in self.get_friends(member):
+                        #print(f'friend: {friend}')
+                        q.enqueue(friend)
+
+            for member in members:
+                q = Queue()
+                checked = set()
+                q.enqueue([friendship])
+
+                while q.size() > 0:
+                    path = q.dequeue()
+                    node = path[-1]
+                    if node not in checked:
+                        if node == member:
+                            if member not in visited:  # Not sure I need this check?
+                                # if this doesn't work, try friendship, I'm a little lost trying to keep track of what I need here
+                                visited[member] = path
+                                continue  # Is this where this belongs?
+                        else:
+                            checked.add(node)
+                        for friend in self.get_friends(node):
+                            new_path = list(path)
+                            new_path.append(friend)
+                            q.enqueue(new_path)
+
         return visited
 
     def get_friends(self, user_id):  # GET_NEIGHBORS
-        return self.users[user_id]
+        return self.friendships[user_id]
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
     print(sg.friendships)
-    # connections = sg.get_all_social_paths(1)
-    # print(connections)
+    connections = sg.get_all_social_paths(1)
+    print(connections)
