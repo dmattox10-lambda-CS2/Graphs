@@ -17,6 +17,7 @@ class SocialGraph:
         self.users = {}  # VERTICES
         self.friendships = {}  # EDGES
         self.names = None
+        self.added = 0  # how many times add_friendship was called
 
     def add_friendship(self, user_id, friend_id):  # ADD_EDGE
         """
@@ -30,7 +31,7 @@ class SocialGraph:
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
-            print(f'{user_id} and {friend_id} are friends now!')
+            self.added += 1
 
     def add_user(self, name):  # ADD_VERTEX - Modified to start at 0
         """
@@ -59,6 +60,9 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
+        self.degs = []
+        self.percentage = 0
+        self.average = 0
         # !!!! IMPLEMENT ME
         # Add users
         if self.names == None:
@@ -103,18 +107,20 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
-        for friendship in self.friendships[user_id + 1]:
+        print(f'User {user_id} is friends with {self.friendships[user_id]}')
+        for friendship in self.friendships[user_id]:
+
             q = Queue()
             members = set()
             q.enqueue(friendship)
-            #print(f'friendship: {friendship}')
+            print(f'friendship: {friendship}')
             while q.size() > 0:
                 member = q.dequeue()
-                #print(f'member: {member}')
+                print(f'member: {member}')
                 if member not in members:
                     members.add(member)
                     for friend in self.get_friends(member):
-                        #print(f'friend: {friend}')
+                        print(f'friend: {friend}')
                         q.enqueue(friend)
 
             for member in members:
@@ -129,6 +135,7 @@ class SocialGraph:
                         if node == member:
                             if member not in visited:  # Not sure I need this check?
                                 # if this doesn't work, try friendship, I'm a little lost trying to keep track of what I need here
+                                self.degs.append(len(path))
                                 visited[member] = path
                                 continue  # Is this where this belongs?
                         else:
@@ -138,6 +145,9 @@ class SocialGraph:
                             new_path.append(friend)
                             q.enqueue(new_path)
 
+        self.average = sum(self.degs) / len(self.degs)
+        self.percentage = self.average / len(self.degs) * 100
+
         return visited
 
     def get_friends(self, user_id):  # GET_NEIGHBORS
@@ -146,7 +156,10 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print(sg.friendships)
+    print('\n')
     connections = sg.get_all_social_paths(1)
     print(connections)
+    print(sg.average)
+    print(sg.percentage)
