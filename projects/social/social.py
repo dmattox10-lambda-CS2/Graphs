@@ -123,7 +123,7 @@ class SocialGraph:
 
                     for friend in self.get_friends(member):
                         #print(f'friend: {friend}')
-                        q.enqueue(friend)
+                        q.enqueue(friend)  # push the path here?
 
             for member in members:
                 q = Queue()
@@ -150,9 +150,9 @@ class SocialGraph:
                             new_path.append(friend)
                             q.enqueue(new_path)
 
-        # self.average = sum(self.degs) / len(self.degs)
+        self.average = sum(self.degs) / len(self.degs)
         # self.percentage = self.average / len(self.degs) * 100
-
+        self.percentage = len(visited.keys()) / self.last_id * 100
         return visited
 
     def get_friends(self, user_id):  # GET_NEIGHBORS
@@ -166,5 +166,5 @@ if __name__ == '__main__':
     print('\n')
     connections = sg.get_all_social_paths(1)
     print(connections)
-    # print(sg.average)
-    # print(sg.percentage)
+    print(sg.average)
+    print(sg.percentage)
