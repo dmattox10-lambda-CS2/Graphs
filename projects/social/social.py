@@ -36,14 +36,14 @@ class SocialGraph:
         """
         Create a new user with a sequential integer ID
         """
-        # self.last_id += 1  # automatically increment the ID to assign the new user
-        # self.users[self.last_id] = User(name)
-        # self.friendships[self.last_id] = set()
-
+        self.last_id += 1  # automatically increment the ID to assign the new user
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
-        print(f'{self.users[self.last_id]} is user {self.last_id}')
-        self.last_id += 1  # automatically increment the ID to assign the new user
+
+        # self.users[self.last_id] = User(name)
+        # self.friendships[self.last_id] = set()
+        # print(f'{self.users[self.last_id]} is user {self.last_id}')
+        # self.last_id += 1  # automatically increment the ID to assign the new user
 
     def populate_graph(self, num_users, avg_friendships):
         """
@@ -68,20 +68,20 @@ class SocialGraph:
                 for name in data.split():
                     self.names.append(name)
         random.shuffle(self.names)
-        i = 0
-        while i < num_users:
+        i = 1
+        while i < num_users + 1:
             self.add_user(self.names[i])
             i += 1
         # Create friendships
-        i = 0
+        i = 1
         # for each user in users, in order
-        while i < num_users:
+        while i < num_users + 1:
             # create a list of friend id's with no repeats?
             # for each friend id in the list, add it to the user we are on as friends
             # num_to_add = random.randrange(0, avg_friendships * 2)
             # poss = range(0, num_users)
             # poss_list = random.sample(poss, num_to_add)
-            pull = [i for i in range(0, num_users - 1)]
+            pull = [i for i in range(1, num_users)]
             random.shuffle(pull)
             num_to_add = random.randrange(0, math.floor(avg_friendships * 2))
             j = 0
@@ -103,7 +103,7 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
-        for friendship in self.friendships[user_id]:
+        for friendship in self.friendships[user_id + 1]:
             q = Queue()
             members = set()
             q.enqueue(friendship)
