@@ -52,6 +52,8 @@ Mine ran that function [successfully] 900 times in my first run with this input,
 
 2. If you create 1000 users with an average of 5 random friends each, what percentage of other users will be in a particular user's extended social network? What is the average degree of separation between a user and those in his/her extended network?
 
+I don't know if I have the math correct on any of it but I get an average degrees of separation around 4.0 every time. The percentage of users in an extended network is then 
+
 
 
 ## 4. Stretch Goal

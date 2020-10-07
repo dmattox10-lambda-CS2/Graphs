@@ -113,40 +113,45 @@ class SocialGraph:
             q = Queue()
             members = set()
             q.enqueue(friendship)
-            print(f'friendship: {friendship}')
+            #print(f'friendship: {friendship}')
+
             while q.size() > 0:
                 member = q.dequeue()
-                print(f'member: {member}')
+                #print(f'member: {member}')
                 if member not in members:
                     members.add(member)
+
                     for friend in self.get_friends(member):
-                        print(f'friend: {friend}')
+                        #print(f'friend: {friend}')
                         q.enqueue(friend)
 
             for member in members:
                 q = Queue()
                 checked = set()
-                q.enqueue([friendship])
+                q.enqueue([user_id])
 
                 while q.size() > 0:
                     path = q.dequeue()
                     node = path[-1]
                     if node not in checked:
-                        if node == member:
-                            if member not in visited:  # Not sure I need this check?
-                                # if this doesn't work, try friendship, I'm a little lost trying to keep track of what I need here
-                                self.degs.append(len(path))
-                                visited[member] = path
-                                continue  # Is this where this belongs?
+                        # print(checked)
+                        if member == node:
+                            # if member not in visited:  # Not sure I need this check?
+                            # if this doesn't work, try friendship, I'm a little lost trying to keep track of what I need here
+                            self.degs.append(len(path))
+                            # print(path)
+                            visited[node] = path
+                            continue  # Is this where this belongs?
                         else:
                             checked.add(node)
+
                         for friend in self.get_friends(node):
                             new_path = list(path)
                             new_path.append(friend)
                             q.enqueue(new_path)
 
-        self.average = sum(self.degs) / len(self.degs)
-        self.percentage = self.average / len(self.degs) * 100
+        # self.average = sum(self.degs) / len(self.degs)
+        # self.percentage = self.average / len(self.degs) * 100
 
         return visited
 
@@ -161,5 +166,5 @@ if __name__ == '__main__':
     print('\n')
     connections = sg.get_all_social_paths(1)
     print(connections)
-    print(sg.average)
-    print(sg.percentage)
+    # print(sg.average)
+    # print(sg.percentage)
