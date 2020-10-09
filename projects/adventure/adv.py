@@ -17,8 +17,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-#map_file = "maps/test_loop_fork.txt"
-map_file = "maps/main_maze.txt"
+map_file = "maps/test_loop_fork.txt"
+#map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph = literal_eval(open(map_file, "r").read())
@@ -41,7 +41,7 @@ while q.size() > 0:
     room = q.dequeue()
     if room.id not in mappings:
         mappings[room.id] = {"id": room.id, "n": None, "e": None,
-                            "s": None, "w": None, "x": room.x, "y": room.y}
+                             "s": None, "w": None, "x": room.x, "y": room.y}
         for dir in room.get_exits():
             new_room = room.get_room_in_direction(dir)
             mappings[room.id][dir] = new_room.id
@@ -69,13 +69,13 @@ for mapping in mappings:
 #     print(vertice, graph.vertices[vertice])
 edges = []
 nodes = [n for n in mappings]
-node_dict = {n:{} for n in nodes}
+node_dict = {n: {} for n in nodes}
 for index_1 in range(0, len(nodes) - 1):
     for index_2 in range(index_1+1, len(nodes)):
         start_node = nodes[index_1]
         end_node = nodes[index_2]
         distance = len(graph.bfs(start_node, end_node))
-        #distance = len(graph.dfs_recursive(start_node, end_node)) # MUCH LESS EFFICIENT, I was just curious
+        # distance = len(graph.dfs_recursive(start_node, end_node)) # MUCH LESS EFFICIENT, I was just curious
         node_dict[start_node][end_node] = distance
         edges.append((start_node, end_node, distance))
         #print(start_node, end_node, distance)
@@ -84,14 +84,19 @@ for entry in node_dict:
     print(node_dict[entry])
 
 # This is just amazing, found a genetic algorithm to find the shortest order to visit a given number of cities and changed it to use BFS distances, and nodes!
-g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.25, crossover_prob=0.25, population_size=30, steps=15, iterations=2000)
+#g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.25, crossover_prob=0.25, population_size=30, steps=15, iterations=2000)
+g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.1,
+                crossover_prob=0.5, population_size=100, steps=15, iterations=2000)
+#g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.1, crossover_prob=0.5, population_size=100, steps=30, iterations=1000)
+#g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.3, crossover_prob=0.3, population_size=10, steps=10, iterations=4000)
+#g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.4, crossover_prob=0.4, population_size=200, steps=5, iterations=800)
 ideal_order = g.converge()
 print(ideal_order)
 # For some reason 0 is duplicated
 #ideal_order = set(ideal_order)
 # now that the dupes are gone I need a list again!
 #ideal_order = list(ideal_order)
-#print(ideal_order)
+# print(ideal_order)
 exec_pairs = []
 for i in range(0, len(ideal_order) - 1):
     exec_pairs.append((ideal_order[i], ideal_order[i+1]))
@@ -101,9 +106,6 @@ print(exec_pairs)
 
 traversal_path = []
 
-
-
-    
 
 # TRAVERSAL TEST
 visited_rooms = set()
