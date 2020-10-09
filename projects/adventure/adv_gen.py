@@ -49,19 +49,20 @@ class GeneticAlgo():
                 except:
                     distance = self.hash_map[end_node][start_node]
                 total_distance += distance
+                print(f'Total distance end to end: {total_distance}')
             fitness = 1/total_distance
             fitness_scores.append(fitness)
         return fitness_scores
 
     def evolve(self):
-        index_map = {i: '' for i in range(0, len(self.nodes) - 1)} # CHANGED 1 to 0
-        indices = [i for i in range(0, len(self.nodes) - 1)] # CHANGED 1 to 0
+        index_map = {i: '' for i in range(1, len(self.nodes) - 1)} 
+        indices = [i for i in range(1, len(self.nodes) - 1)] 
         remaining = [n for n in self.nodes]
         cross = (1 - self.epsilon) * self.crossover_prob
         mutate = self.epsilon * self.mutation_prob
-        crossed_count = int(cross * len(self.nodes) ) # REMOVED -1
-        mutated_count = int((mutate * len(self.nodes) )/2) # REMOVED -1
-        for index in range(len(self.nodes)-1):
+        crossed_count = int(cross * len(self.nodes)-1 )
+        mutated_count = int((mutate * len(self.nodes)-1 )/2)
+        for index in range(len(self.genes)-1):
             gene = self.genes[index]
             for i in range(crossed_count):
                 try:
@@ -85,7 +86,7 @@ class GeneticAlgo():
             else:
                 node = remaining_nodes.pop(0)
                 index_map[k] = node
-        new_gene = [index_map[i] for i in range(0, len(self.nodes) - 1)] # CHANGED 1 to 0
+        new_gene = [index_map[i] for i in range(1, len(self.nodes) - 1)] 
         new_gene.insert(0, self.start)
         new_gene.append(self.start)
         for i in range(mutated_count):
