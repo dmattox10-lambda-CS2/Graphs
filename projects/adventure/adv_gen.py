@@ -49,7 +49,6 @@ class GeneticAlgo():
                 except:
                     distance = self.hash_map[end_node][start_node]
                 total_distance += distance
-                print(f'Total distance end to end: {total_distance}')
             fitness = 1/total_distance
             fitness_scores.append(fitness)
         return fitness_scores

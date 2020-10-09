@@ -17,8 +17,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-map_file = "maps/test_loop_fork.txt"
-#map_file = "maps/main_maze.txt"
+#map_file = "maps/test_loop_fork.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph = literal_eval(open(map_file, "r").read())
@@ -78,7 +78,7 @@ for index_1 in range(0, len(nodes) - 1):
         #distance = len(graph.dfs_recursive(start_node, end_node)) # MUCH LESS EFFICIENT, I was just curious
         node_dict[start_node][end_node] = distance
         edges.append((start_node, end_node, distance))
-        print(start_node, end_node, distance)
+        #print(start_node, end_node, distance)
 
 for entry in node_dict:
     print(node_dict[entry])
