@@ -80,8 +80,8 @@ for index_1 in range(0, len(nodes) - 1):
         edges.append((start_node, end_node, distance))
         #print(start_node, end_node, distance)
 
-for entry in node_dict:
-    print(node_dict[entry])
+# for entry in node_dict:
+#     print(node_dict[entry])
 
 # This is just amazing, found a genetic algorithm to find the shortest order to visit a given number of cities and changed it to use BFS distances, and nodes!
 #g = GeneticAlgo(hash_map=node_dict, start=player.current_room.id, mutation_prob=0.25, crossover_prob=0.25, population_size=30, steps=15, iterations=2000)
