@@ -1,17 +1,29 @@
+import random
+import math
+from util import Queue
+
+
 class User:
     def __init__(self, name):
         self.name = name
 
+    def __str__(self):
+        return self.name
+
+
 class SocialGraph:
     def __init__(self):
-        self.last_id = 0
-        self.users = {}
-        self.friendships = {}
+        self.last_id = 0  # COUNTER
+        self.users = {}  # VERTICES
+        self.friendships = {}  # EDGES
+        self.names = None
+        self.added = 0  # how many times add_friendship was called
 
-    def add_friendship(self, user_id, friend_id):
+    def add_friendship(self, user_id, friend_id):  # ADD_EDGE
         """
         Creates a bi-directional friendship
         """
+        # DO I NEED TO CHECK FOR VALID INDEXES HERE?
         if user_id == friend_id:
             print("WARNING: You cannot be friends with yourself")
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
@@ -19,14 +31,20 @@ class SocialGraph:
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            self.added += 1
 
-    def add_user(self, name):
+    def add_user(self, name):  # ADD_VERTEX - Modified to start at 0
         """
         Create a new user with a sequential integer ID
         """
         self.last_id += 1  # automatically increment the ID to assign the new user
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
+
+        # self.users[self.last_id] = User(name)
+        # self.friendships[self.last_id] = set()
+        # print(f'{self.users[self.last_id]} is user {self.last_id}')
+        # self.last_id += 1  # automatically increment the ID to assign the new user
 
     def populate_graph(self, num_users, avg_friendships):
         """
@@ -42,11 +60,41 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
+        self.degs = []
+        self.percentage = 0
+        self.average = 0
         # !!!! IMPLEMENT ME
-
         # Add users
-
+        if self.names == None:
+            self.names = []
+            with open('names.txt') as names_file:
+                data = names_file.read()
+                for name in data.split():
+                    self.names.append(name)
+        random.shuffle(self.names)
+        i = 1
+        while i < num_users + 1:
+            self.add_user(self.names[i])
+            i += 1
         # Create friendships
+        i = 1
+        # for each user in users, in order
+        while i < num_users + 1:
+            # create a list of friend id's with no repeats?
+            # for each friend id in the list, add it to the user we are on as friends
+            # num_to_add = random.randrange(0, avg_friendships * 2)
+            # poss = range(0, num_users)
+            # poss_list = random.sample(poss, num_to_add)
+            pull = [i for i in range(1, num_users)]
+            random.shuffle(pull)
+            num_to_add = random.randrange(0, math.floor(avg_friendships * 2))
+            j = 0
+            while j < num_to_add:
+                friend = pull.pop()
+                if friend != i:
+                    self.add_friendship(i, friend)
+                    j += 1
+            i += 1
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,12 +107,64 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        print(f'User {user_id} is friends with {self.friendships[user_id]}')
+        for friendship in self.friendships[user_id]:
+
+            q = Queue()
+            members = set()
+            q.enqueue(friendship)
+            #print(f'friendship: {friendship}')
+
+            while q.size() > 0:
+                member = q.dequeue()
+                #print(f'member: {member}')
+                if member not in members:
+                    members.add(member)
+
+                    for friend in self.get_friends(member):
+                        #print(f'friend: {friend}')
+                        q.enqueue(friend)  # push the path here?
+
+            for member in members:
+                q = Queue()
+                checked = set()
+                q.enqueue([user_id])
+
+                while q.size() > 0:
+                    path = q.dequeue()
+                    node = path[-1]
+                    if node not in checked:
+                        # print(checked)
+                        if member == node:
+                            # if member not in visited:  # Not sure I need this check?
+                            # if this doesn't work, try friendship, I'm a little lost trying to keep track of what I need here
+                            self.degs.append(len(path))
+                            # print(path)
+                            visited[node] = path
+                            continue  # Is this where this belongs?
+                        else:
+                            checked.add(node)
+
+                        for friend in self.get_friends(node):
+                            new_path = list(path)
+                            new_path.append(friend)
+                            q.enqueue(new_path)
+
+        self.average = sum(self.degs) / len(self.degs)
+        # self.percentage = self.average / len(self.degs) * 100
+        self.percentage = len(visited.keys()) / self.last_id * 100
         return visited
+
+    def get_friends(self, user_id):  # GET_NEIGHBORS
+        return self.friendships[user_id]
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print(sg.friendships)
+    print('\n')
     connections = sg.get_all_social_paths(1)
     print(connections)
+    print(sg.average)
+    print(sg.percentage)

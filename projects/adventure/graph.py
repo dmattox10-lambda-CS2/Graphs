@@ -32,7 +32,7 @@ class Graph:
         """
         return self.vertices[vertex_id]
 
-    def is_connected(self, v1, v2):
+    def is_connected(self, v1, v2):  # This is never used, why did we need it in class?
         if v1 in self.vertices and v2 in self.vertices:
             return v1 in self.vertices[v2]
         else:
@@ -185,10 +185,11 @@ if __name__ == '__main__':
     graph.add_vertex(1)
     graph.add_vertex(2)
     graph.add_vertex(3)
-    graph.add_vertex(4)
+
     graph.add_vertex(5)
     graph.add_vertex(6)
     graph.add_vertex(7)
+    graph.add_vertex(4)
     graph.add_edge(5, 3)
     graph.add_edge(6, 3)
     graph.add_edge(7, 1)
