@@ -2,7 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 def get_distance(start, stop):
-    api = "AIzaSyAyVX14z_Or_G1JRbi6vYr2wvEAeC0dnlw" 
+    api = "GETyourOWNkey" 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + start + "&destinations=" + stop + "&key=" + api
     link = requests.get(url)
     # print(link)
